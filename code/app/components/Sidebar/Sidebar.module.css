@@ -1,0 +1,16 @@
+.container{
+  width: 250px;
+  height: 100%;
+  max-height: calc(100% - 70px);
+  overflow: auto;
+}
+
+.hide{
+  left: -250px;
+  position: absolute;
+}
+
+.show{
+  left: 0px;
+  position: absolute;
+}
