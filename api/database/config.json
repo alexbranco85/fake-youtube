@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "SequelizeAccessDeniedError",
+    "database": "db_fakeyoutube",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "SequelizeAccessDeniedError",
+    "database": "alex_portfolio_db",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "portfoliodb",
+    "password": "portfoliodb",
+    "database": "portfoliodatabase",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

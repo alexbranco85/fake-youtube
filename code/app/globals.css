@@ -19,3 +19,17 @@
 body {
   color: rgb(var(--foreground-rgb));
 }
+
+input {
+  min-width: 400px;
+  border: 1px solid #bbbbbb;
+  border-radius: 50px;
+  padding: 5px 15px;
+}
+
+.send_button {
+  padding: 5px 15px;
+  background-color: red;
+  color: #fff;
+  border-radius: 30px;
+}

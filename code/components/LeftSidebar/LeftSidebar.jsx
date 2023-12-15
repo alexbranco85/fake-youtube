@@ -1,6 +1,6 @@
-import styles from './Sidebar.module.css'
+import styles from './LeftSidebar.module.css'
 
-const Sidebar = ({ open }) => {
+const LeftSidebar = ({ open }) => {
 
   return (
     <div className={`p-4 transition-all duration-sidebar ${styles.container} ${open ? styles.show : styles.hide}`}>
@@ -9,4 +9,4 @@ const Sidebar = ({ open }) => {
   )
 }
 
-export default Sidebar;
+export default LeftSidebar;

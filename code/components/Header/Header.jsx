@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import Sidebar from '../Sidebar/Sidebar';
+import LeftSidebar from '../LeftSidebar/LeftSidebar';
 import styles from './Header.module.css'
 
 const Header = () => {
@@ -57,7 +57,7 @@ const Header = () => {
           </button>
         </div>
       </div>
-      <Sidebar
+      <LeftSidebar
         open={openSidebar}
       />
     </>
