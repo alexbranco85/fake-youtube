@@ -3,14 +3,17 @@
   height: 100%;
   max-height: calc(100% - 70px);
   overflow: auto;
+  bottom: 0;
 }
 
 .hide{
   left: -250px;
-  position: absolute;
 }
 
 .show{
   left: 0px;
-  position: absolute;
+}
+
+.overlay_sidebar{
+  max-height: calc(100% - 70px);
 }

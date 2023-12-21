@@ -1,65 +1,156 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LeftSidebar from '../LeftSidebar/LeftSidebar';
 import styles from './Header.module.css'
+import Icons from "@/components/Icons/Icons";
+import Link from 'next/link';
+import ModalComponent from '../ModalComponent/ModalComponent';
+import { useForm } from "react-hook-form";
+import backendApi from '@/api/api';
 
-const Header = () => {
+const Header = ({ refreshGrid }) => {
 
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [loadingUpload, setLoadingUpload] = useState(false);
+  const [errorField, setErrorField] = useState(null);
+
+  // const router = useRouter();
 
   const handleToggleSidebar = () => {
     setOpenSidebar(!openSidebar);
   }
 
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+
+  const onSubmit = async () => {
+
+    if (!watch("url_video")) {
+      setErrorField("É necessário inserir uma URL para enviar.");
+
+      setTimeout(() => {
+        setErrorField(null);
+      }, 6000);
+      return;
+    }
+
+    setLoadingUpload(true);
+    const formData = new FormData();
+
+    const textData = {
+      video: watch("url_video")
+    }
+
+    await fetch(`${backendApi}video/save`, {
+      method: 'POST',
+      body: JSON.stringify(textData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        response.json();
+
+        setTimeout(() => {
+          setLoadingUpload(false);
+          setOpenModal(false);
+          refreshGrid.refreshGrid()
+          console.log("refreshGrid", refreshGrid)
+          reset();
+        }, 2000);
+
+      })
+  }
+
   return (
     <>
-      <div className="w-full flex p-4 justify-between gap-4 items-center transition-all">
+      <div className="flex p-4 justify-between gap-4 items-center transition-all box-content">
         <div className="flex gap-4 items-center">
           <div>
-            <button className="navbar-burger flex items-center text-blue-600" onClick={handleToggleSidebar}>
+            <button className="navbar-burger flex items-center hover:text-red-600 transition-all" onClick={handleToggleSidebar}>
               {openSidebar ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                Icons('close', 8)
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
+                Icons('menu', 8)
               )}
             </button>
           </div>
           <div>
-            <h6>ALEXTUBE</h6>
+            <Link href="/"><h6 className='font-bold text-xl'><span className='text-red-700'>tube</span>TUBE</h6></Link>
           </div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center hidden sm:hidden md:flex">
           <input
             type="text"
             placeholder="Pesquisar"
             className={`px-4 py-2 rounded-full w-full text-sm ${styles.search_bar}`}
           />
           <button style={{ marginLeft: '-50px' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
+            {Icons('search')}
           </button>
         </div>
         <div className="flex items-center gap-4">
-          <button>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-            </svg>
+          <button onClick={() => setOpenModal(true)}>
+            {Icons('add', 8)}
           </button>
           <button>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+            {Icons('notifications')}
+          </button>
+          <button>
+            {Icons('user')}
           </button>
         </div>
       </div>
       <LeftSidebar
         open={openSidebar}
+        setOpen={setOpenSidebar}
       />
+
+      <ModalComponent
+        title="Inserir Vídeo"
+        open={openModal}
+        setOpen={setOpenModal}
+      >
+        <div className='p-4'>
+          <div>
+
+            {loadingUpload && (
+              <div className='w-full flex flex-col items-center gap-4 my-4'>
+                {Icons('loading')}
+                <p>Salvando Vídeo</p>
+              </div>
+            )}
+            <>
+
+              {errorField && (
+                <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                  <div>
+                    <span class="font-medium">Atenção!</span> {errorField}.
+                  </div>
+                </div>
+              )}
+
+              <p className='pb-4'>Para adicionar um vídeo, insira sua url no campo abaixo e clique em enviar.</p>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                  {...register("url_video")}
+                  type="text"
+                  placeholder="Insira a URL do vídeo para enviar"
+                  name="url_video"
+                  className='rounded-full w-full'
+                />
+                <div className='flex gap-4 justify-end mt-4'>
+
+                  <button onClick={() => setOpenModal(false)} type="button" class="flex gap-2 items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2 dark:bg-gray-800 dark:text-white">{Icons('close', 4)} Cancelar</button>
+
+                  <button className="flex gap-2 items-center text-white bg-red-600 border border-red-300 focus:outline-none hover:bg-red-800 focus:ring-4 focus:ring-red-200 font-medium rounded-full text-sm px-5 py-2" type="submit">{Icons('upload', 4)} Enviar</button>
+                </div>
+              </form>
+            </>
+          </div>
+        </div>
+      </ModalComponent>
+
     </>
   )
 }

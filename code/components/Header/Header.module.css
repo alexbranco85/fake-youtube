@@ -2,3 +2,11 @@
   min-width: 400px;
   border: 1px solid #bbbbbb;
 }
+
+.search_bar:focus {
+  min-width: 400px;
+  /* border: 1px solid #dc2626; */
+  outline: #dc2626;
+  border-color: #dc2626;
+  --tw-ring-color: #dc2626;
+}
