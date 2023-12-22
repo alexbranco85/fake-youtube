@@ -4,7 +4,7 @@ const ModalComponent = ({ children, title, open, setOpen }) => {
   return (
     <>
       {open && (
-        <div className="bg-gray-800 w-full h-screen bg-opacity-80 transition-all duration-1000 fixed top-0">
+        <div className="bg-gray-800 w-full h-screen bg-opacity-80 transition-all duration-1000 fixed top-0 z-50">
           <div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" className="flex fixed z-50 justify-center items-center w-full max-h-full">
             <div class="relative p-4 w-full max-w-2xl max-h-full">
 

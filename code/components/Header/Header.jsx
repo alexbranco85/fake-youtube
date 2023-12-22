@@ -67,7 +67,7 @@ const Header = ({ refreshGrid }) => {
       <div className="flex p-4 justify-between gap-4 items-center transition-all box-content">
         <div className="flex gap-4 items-center">
           <div>
-            <button className="navbar-burger flex items-center hover:text-red-600 transition-all" onClick={handleToggleSidebar}>
+            <button className="text-black navbar-burger flex items-center hover:text-red-600 transition-all" onClick={handleToggleSidebar}>
               {openSidebar ? (
                 Icons('close', 8)
               ) : (
@@ -76,7 +76,7 @@ const Header = ({ refreshGrid }) => {
             </button>
           </div>
           <div>
-            <Link href="/"><h6 className='font-bold text-xl'><span className='text-red-700'>tube</span>TUBE</h6></Link>
+            <Link href="/"><h6 className='text-black font-bold text-xl'><span className='text-red-700'>tube</span>TUBE</h6></Link>
           </div>
         </div>
         <div className="flex items-center hidden sm:hidden md:flex">
@@ -94,10 +94,10 @@ const Header = ({ refreshGrid }) => {
             {Icons('add', 8)}
           </button>
           <button>
-            {Icons('notifications')}
+            {Icons('notifications', 8)}
           </button>
           <button>
-            {Icons('user')}
+            {Icons('user', 8)}
           </button>
         </div>
       </div>

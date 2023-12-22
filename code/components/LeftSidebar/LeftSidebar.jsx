@@ -48,7 +48,7 @@ const LeftSidebar = ({ open, setOpen }) => {
           <ul>
             {menuItems.map(item => (
               <li key={item.title} className='w-full p-2'>
-                <Link className='flex gap-4 hover:text-red-600 transition-all' href={item.link}>{Icons(item.icon)}{item.title}</Link>
+                <Link className='flex text-black gap-4 hover:text-red-600 transition-all' href={item.link}>{Icons(item.icon)}{item.title}</Link>
               </li>
             ))}
           </ul>

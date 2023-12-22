@@ -48,9 +48,9 @@ const GridVideos = ({ cols, limit, sidebar }, ref) => {
                   </div>
                 </div>
                 <div className=''>
-                  <p className='font-semibold'>{video.title}</p>
-                  <p className='text-sm mt-2'>{video.channelTitle}</p>
-                  <p className='text-sm'>{Math.floor(Math.random() * (900000 - 50 + 1)) + 50} Visualizações • há {Math.floor(Math.random() * 12) + 1} meses</p>
+                  <p className='text-black font-semibold'>{video.title}</p>
+                  <p className='text-black text-sm mt-2'>{video.channelTitle}</p>
+                  <p className='text-black text-sm'>{Math.floor(Math.random() * (900000 - 50 + 1)) + 50} Visualizações • há {Math.floor(Math.random() * 12) + 1} meses</p>
                 </div>
               </div>
             </div>
