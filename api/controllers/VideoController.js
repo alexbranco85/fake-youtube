@@ -54,19 +54,35 @@ const VideoController = {
   save: async (req, res) => {
     try {
 
+      // **** salva a url enviada na variável urlVideo e o id do vídeo na variável videoId
       const urlVideo = req.body.video;
       const videoId = urlVideo.split('v=')[1];
-
+      
+      // **** se não existir um id na url vai sair da função e retornar erro
       if (!videoId) {
-        return;
+        return res.status(400).json({ error: 'Não foi possível adicionar. URL inválida ou id do vídeo inválido.', success: false });
       }
 
+      // **** checar se o vídeo já existe, caso existir sai da função e retorna um erro
+      const checkVideo = await Video.findOne({
+        where: {
+          id_yt: videoId
+        }
+      })
+
+      if (checkVideo) {
+        return res.status(400).json({ error: 'O vídeo já existe. Tente novamente.', success: false });
+      }
+
+      // **** faz a conexão com a api do youtube
       const apiKey = process.env.YTAPI;
       const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
 
       const response = await fetch(apiUrl);
       const data = await response.json();
 
+
+      // **** monta o objeto para enviar para o banco
       const objVideo = {
         title: data.items[0].snippet.title,
         description: data.items[0].snippet.description,
@@ -77,15 +93,19 @@ const VideoController = {
         id_yt: data.items[0].id
       }
 
+      // **** caso não consiga montar o objeto sai da função e retorna um erro
       if (!objVideo) {
-        return;
+        return res.status(400).json({ error: 'Não foi possível adicionar. Dados inválidos.', success: false });
       }
 
+      // **** cria o vídeo no banco de dados
       const createdVideo = await Video.create(objVideo);
 
       const relationPromises = [];
       const createdTag = [];
 
+
+      // **** verifica se o vídeo tem tags vindas do youtube, caso tiver vai fazer um for verificando se a tag já existe e caso não exista salva a tag na tabela tags do banco de dados e depois na tabela de video_has_tags salva o id da tag e do video para fazer o relacionamento
       if (data.items[0].snippet.tags.length) {
 
         const tags = data.items[0].snippet.tags;
@@ -115,7 +135,7 @@ const VideoController = {
 
       await Promise.all(relationPromises);    
 
-      res.status(200).json({ data: createdVideo, createdTag: createdTag, yt: data, success: true });
+      res.status(200).json({ data: createdVideo, createdTag: createdTag, yt: data, success: true, message: 'Vídeo adicionado com sucesso!' });
 
     } catch (error) {
       console.log('error', error)

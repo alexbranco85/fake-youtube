@@ -7,6 +7,8 @@ import Link from 'next/link';
 import ModalComponent from '../ModalComponent/ModalComponent';
 import { useForm } from "react-hook-form";
 import backendApi from '@/api/api';
+import { Spinner } from 'flowbite-react';
+import CustomToast from '../Toast/CustomToast';
 
 const Header = ({ refreshGrid }) => {
 
@@ -14,8 +16,8 @@ const Header = ({ refreshGrid }) => {
   const [openModal, setOpenModal] = useState(false);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [errorField, setErrorField] = useState(null);
-
-  // const router = useRouter();
+  const [toastOptions, setToastOptions] = useState({ open: false, message: null, title: null, status: null });
+  
 
   const handleToggleSidebar = () => {
     setOpenSidebar(!openSidebar);
@@ -47,18 +49,20 @@ const Header = ({ refreshGrid }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-      .then(response => {
-        response.json();
-
-        setTimeout(() => {
+    }).then(async response => {
+        const res = await response.json();
+        if (res.success) {
+          setTimeout(() => {
+            setLoadingUpload(false);
+            setOpenModal(false);
+            refreshGrid.refreshGrid()
+            reset();
+          }, 2000);
+          setToastOptions({ open: true, message: res.message, title: "Sucesso", status: "success" })
+        } else {
+          setToastOptions({ open: true, message: res.error ? res.error : "Ocorreu um erro durante o envio.", title: "Erro", status: "error" })
           setLoadingUpload(false);
-          setOpenModal(false);
-          refreshGrid.refreshGrid()
-          console.log("refreshGrid", refreshGrid)
-          reset();
-        }, 2000);
-
+        }
       })
   }
 
@@ -116,7 +120,7 @@ const Header = ({ refreshGrid }) => {
 
             {loadingUpload && (
               <div className='w-full flex flex-col items-center gap-4 my-4'>
-                {Icons('loading')}
+                <Spinner color="failure" aria-label="Failure spinner example" />
                 <p>Salvando Vídeo</p>
               </div>
             )}
@@ -130,27 +134,30 @@ const Header = ({ refreshGrid }) => {
                 </div>
               )}
 
-              <p className='pb-4'>Para adicionar um vídeo, insira sua url no campo abaixo e clique em enviar.</p>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <input
-                  {...register("url_video")}
-                  type="text"
-                  placeholder="Insira a URL do vídeo para enviar"
-                  name="url_video"
-                  className='rounded-full w-full'
-                />
-                <div className='flex gap-4 justify-end mt-4'>
+              {!loadingUpload && (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <p className='pb-4 text-black'>Para adicionar um vídeo, insira sua url no campo abaixo e clique em enviar.</p>
+                  <input
+                    {...register("url_video")}
+                    type="text"
+                    placeholder="Insira a URL do vídeo para enviar"
+                    name="url_video"
+                    className='rounded-full w-full'
+                  />
+                  <div className='flex gap-4 justify-end mt-4'>
 
-                  <button onClick={() => setOpenModal(false)} type="button" class="flex gap-2 items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2 dark:bg-gray-800 dark:text-white">{Icons('close', 4)} Cancelar</button>
+                    <button onClick={() => setOpenModal(false)} type="button" class="flex gap-2 items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2 dark:bg-gray-800 dark:text-white">{Icons('close', 4)} Cancelar</button>
 
-                  <button className="flex gap-2 items-center text-white bg-red-600 border border-red-300 focus:outline-none hover:bg-red-800 focus:ring-4 focus:ring-red-200 font-medium rounded-full text-sm px-5 py-2" type="submit">{Icons('upload', 4)} Enviar</button>
-                </div>
-              </form>
+                    <button className="flex gap-2 items-center text-white bg-red-600 border border-red-300 focus:outline-none hover:bg-red-800 focus:ring-4 focus:ring-red-200 font-medium rounded-full text-sm px-5 py-2" type="submit">{Icons('upload', 4)} Enviar</button>
+                  </div>
+                </form>
+              )}
             </>
           </div>
         </div>
       </ModalComponent>
 
+      <CustomToast open={toastOptions.open} title={toastOptions.title} message={toastOptions.message} status={toastOptions.status} setOptions={setToastOptions} />
     </>
   )
 }

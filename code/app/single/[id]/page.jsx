@@ -63,7 +63,7 @@ const Single = () => {
                     <button type="button" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full whitespace-nowrap text-md px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Inscrever-se</button>
                   </div>
                 </div>
-                <div className="col-span-6 md:col-span-3 flex gap-2 justify-start md:justify-end items-center">
+                <div className="col-span-6 md:col-span-3 flex gap-2 justify-start md:justify-end items-center flex-wrap">
 
                   <button type="button" class="flex gap-2 items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">{Icons('share', 4)} Compartilhar</button>
 
