@@ -17,7 +17,7 @@ const Header = ({ refreshGrid }) => {
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [errorField, setErrorField] = useState(null);
   const [toastOptions, setToastOptions] = useState({ open: false, message: null, title: null, status: null });
-  
+
 
   const handleToggleSidebar = () => {
     setOpenSidebar(!openSidebar);
@@ -50,20 +50,22 @@ const Header = ({ refreshGrid }) => {
         'Content-Type': 'application/json',
       },
     }).then(async response => {
-        const res = await response.json();
-        if (res.success) {
-          setTimeout(() => {
-            setLoadingUpload(false);
-            setOpenModal(false);
-            refreshGrid.refreshGrid()
-            reset();
-          }, 2000);
-          setToastOptions({ open: true, message: res.message, title: "Sucesso", status: "success" })
-        } else {
-          setToastOptions({ open: true, message: res.error ? res.error : "Ocorreu um erro durante o envio.", title: "Erro", status: "error" })
+      const res = await response.json();
+      if (res.success) {
+        setTimeout(() => {
           setLoadingUpload(false);
-        }
-      })
+          setOpenModal(false);
+          if (refreshGrid) {
+            refreshGrid.refreshGrid()
+          }
+          reset();
+        }, 2000);
+        setToastOptions({ open: true, message: res.message, title: "Sucesso", status: "success" })
+      } else {
+        setToastOptions({ open: true, message: res.error ? res.error : "Ocorreu um erro durante o envio.", title: "Erro", status: "error" })
+        setLoadingUpload(false);
+      }
+    })
   }
 
   return (
